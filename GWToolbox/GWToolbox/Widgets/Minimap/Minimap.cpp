@@ -265,6 +265,10 @@ void Minimap::Draw(IDirect3DDevice9* device) {
 			GW::Agent* me = GW::Agents::GetPlayer();
 			if (me == nullptr) return;
 
+			D3DXMATRIX old_proj;
+			device->GetTransform(D3DTS_PROJECTION, &old_proj);
+
+
 			// Backup the DX9 state
 			IDirect3DStateBlock9* d3d9_state_block = NULL;
 			if (device->CreateStateBlock(D3DSBT_ALL, &d3d9_state_block) < 0)
@@ -353,6 +357,9 @@ void Minimap::Draw(IDirect3DDevice9* device) {
 			// Restore the DX9 state
 			d3d9_state_block->Apply();
 			d3d9_state_block->Release();
+
+			device->SetTransform(D3DTS_VIEW, &identity);
+			device->SetTransform(D3DTS_PROJECTION, &old_proj);
 
 		}, (void*)device);
 	}
